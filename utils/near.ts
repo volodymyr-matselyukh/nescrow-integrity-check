@@ -1,5 +1,5 @@
 import { providers } from "near-api-js";
-import { CodeResult } from "near-api-js/lib/providers/provider";
+import { AccountView, CodeResult } from "near-api-js/lib/providers/provider";
 
 export const BACK_END_CONTRACT = "decorous-effect.testnet";
 export const USDT_CONTRACT_ID = "usdt.fakes.testnet";
@@ -26,6 +26,22 @@ export const queryServerSide = async (
       finality: "optimistic",
     });
     return Buffer.from(rawResult.result).toString();
+  } catch (error) {
+    console.log("error", error);
+    return null;
+  }
+};
+
+export const getAccountSummary = async (
+  accountId: string = BACK_END_CONTRACT
+) => {
+  try {
+    const rawResult = await provider.query<AccountView>({
+      request_type: "view_account",
+      account_id: accountId,
+      finality: "final",
+    });
+    return rawResult;
   } catch (error) {
     console.log("error", error);
     return null;
